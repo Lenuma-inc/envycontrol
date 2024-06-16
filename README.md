@@ -8,7 +8,9 @@ Optimus made easy
 </div>
 <br>
 
-# 👁‍🗨 EnvyControl
+# 👁‍🗨 EnvyControl for LunaOS
+
+this fork is used to build EnvyControl customized for [LunaOS](https://gitlab.com/LunaOS/)
 
 EnvyControl is a CLI tool that provides an easy way to switch between GPU modes on Nvidia Optimus systems (i.e laptops with hybrid Intel + Nvidia or AMD + Nvidia graphics configurations) under Linux.
 
@@ -76,7 +78,7 @@ options:
   --dm DISPLAY_MANAGER  Manually specify your Display Manager for Nvidia mode. Available choices: gdm, gdm3, sddm, lightdm
   --force-comp          Enable ForceCompositionPipeline on Nvidia mode
   --coolbits [VALUE]    Enable Coolbits on Nvidia mode. Default if specified: 28
-  --rtd3 [VALUE]        Setup PCI-Express Runtime D3 (RTD3) Power Management on Hybrid mode. Available choices: 0, 1, 2, 3. Default if specified: 2
+  --rtd3 [VALUE]        Setup PCI-Express Runtime D3 (RTD3) Power Management on Hybrid mode. Available choices: 0, 1, 2, 3. Default if specified: 1
   --use-nvidia-current  Use nvidia-current instead of nvidia for kernel modules
   --reset-sddm          Restore default Xsetup file
   --reset               Revert changes made by EnvyControl
@@ -177,58 +179,9 @@ sudo envycontrol --cache-query
 
 ## ⬇️ Getting EnvyControl
 
-### Arch Linux ([AUR](https://aur.archlinux.org/packages/envycontrol))
-
-1. `yay -S envycontrol`
-2. Run `sudo envycontrol -s <MODE>` to switch graphics modes
-
-### Fedora
-
-Use the [COPR](https://copr.fedorainfracloud.org/coprs/sunwire/envycontrol/) maintained by [@sunwire](https://github.com/sunwire)
-
-1. Enable the repository with `sudo dnf copr enable sunwire/envycontrol`
-2. `sudo dnf install python3-envycontrol`
-3. Run `sudo envycontrol -s <MODE>` to switch graphics modes
-
-### Ubuntu / Debian
-
-Since [PEP668 adoption](https://www.linuxuprising.com/2023/03/next-debianubuntu-releases-will-likely.html) is no longer possible to install pip packages outside a virtual environment, instead use the provided deb package:
-
-1. Go to the [latest release page](https://github.com/bayasdev/envycontrol/releases/latest)
-2. Download the attached `python3-envycontrol_version.deb` package
-3. Install it with `sudo apt -y install ./python3-envycontrol_version.deb`
-4. Run `sudo envycontrol -s <MODE>` to switch graphics modes
-
-### Nixos
-
-If you're using Nix Flakes:
-
-- Script could be executed using this command:
-
-```sh
-nix run github:bayasdev/envycontrol -- <args>
-```
-
-- For system-wide installation, add this flake to inputs in your configuration:
-
-```sh
-inputs = {
-  # ...
-  envycontrol.url = github:bayasdev/envycontrol
-};
-```
-
-And mention it in the packages like this:
-
-```sh
-envycontrol.packages.x86_64-linux.default
-```
-
-Thanks to [@ITesserakt](https://github.com/ITesserakt) for adding initial NixOS support!
-
 ### From source
 
-1. Clone this repository with `git clone https://github.com/bayasdev/envycontrol.git` or download the latest tarball from the releases page
+1. Clone this repository with `git clone https://github.com/Lenuma-inc/envycontrol.git` or download the latest tarball from the releases page
 2. Run the script from the root of the repository like this `python ./envycontrol.py -s <MODE>`
 
 💡 Replace `python` with `python3` on Ubuntu/Debian
@@ -260,15 +213,6 @@ The [GPU profile selector](https://github.com/LorenzoMorelli/GPU_profile_selecto
 
 If you're running into this situation you can use the `--use-nvidia-current` flag to make EnvyControl use the correct module name.
 
-### Wayland session is missing on Gnome 43+
-
-GDM now requires `NVreg_PreserveVideoMemoryAllocations` kernel parameter which breaks sleep in nvidia and hybrid mode, as well as rtd3 in hybrid mode, so EnvyControl disables it, if you need a Wayland session follow the instructions below
-
-```
-sudo systemctl enable nvidia-{suspend,resume,hibernate}
-sudo ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
-```
-
 ### The `/usr/share/sddm/scripts/Xsetup` file is missing on my system
 
 If this ever happens please run `sudo envycontrol --reset-sddm`.
@@ -280,7 +224,3 @@ If this ever happens please run `sudo envycontrol --reset-sddm`.
 ## 🐞 I have a problem
 
 Open an issue and **don't forget to complete all the requested fields!**
-
-## ☕️ Buy me a coffee
-
-[PayPal](https://www.paypal.com/paypalme/bayasdev)

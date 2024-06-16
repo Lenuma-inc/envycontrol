@@ -7,7 +7,7 @@ setup(
     name='envycontrol',
     version=envycontrol.VERSION,
     description='Easy GPU switching for Nvidia Optimus laptops under Linux',
-    url='http://github.com/bayasdev/envycontrol',
+    url='https://github.com/Lenuma-inc/envycontrol',
     author='Victor Bayas',
     author_email='victorsbayas@gmail.com',
     license='MIT',
