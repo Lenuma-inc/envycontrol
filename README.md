@@ -179,6 +179,68 @@ sudo envycontrol --cache-query
 
 ## ⬇️ Getting EnvyControl
 
+=======
+### LunaOS
+
+1. `lpm -S envycontrol`
+
+### Arch Linux ([AUR](https://aur.archlinux.org/packages/envycontrol))
+
+1. `yay -S envycontrol`
+2. Run `sudo envycontrol -s <MODE>` to switch graphics modes
+
+### Fedora
+
+Use the [COPR](https://copr.fedorainfracloud.org/coprs/sunwire/envycontrol/) maintained by [@sunwire](https://github.com/sunwire)
+
+1. Enable the repository with `sudo dnf copr enable sunwire/envycontrol`
+2. `sudo dnf install python3-envycontrol`
+3. Run `sudo envycontrol -s <MODE>` to switch graphics modes
+
+### Enterprise Linux + EPEL 9 (RHEL 9, Rocky Linux 9, CentOS Stream 9, Alma Linux 9 etc.)
+
+Use the [COPR](https://copr.fedorainfracloud.org/coprs/thonkdifferent/envycontrol/) maintained by [@thonkdifferent](https://github.com/thonkdifferent)
+
+1. Enable the repository with `sudo dnf copr enable thonkdifferent/envycontrol`
+2. `sudo dnf install python3-envycontrol`
+3. Run `sudo envycontrol -s <MODE>` to switch graphics modes
+
+### Ubuntu / Debian
+
+Since [PEP668 adoption](https://www.linuxuprising.com/2023/03/next-debianubuntu-releases-will-likely.html) is no longer possible to install pip packages outside a virtual environment, instead use the provided deb package:
+
+1. Go to the [latest release page](https://github.com/bayasdev/envycontrol/releases/latest)
+2. Download the attached `python3-envycontrol_version.deb` package
+3. Install it with `sudo apt -y install ./python3-envycontrol_version.deb`
+4. Run `sudo envycontrol -s <MODE>` to switch graphics modes
+
+### Nixos
+
+If you're using Nix Flakes:
+
+- Script could be executed using this command:
+
+```sh
+nix run github:bayasdev/envycontrol -- <args>
+```
+
+- For system-wide installation, add this flake to inputs in your configuration:
+
+```sh
+inputs = {
+  # ...
+  envycontrol.url = github:bayasdev/envycontrol
+};
+```
+
+And mention it in the packages like this:
+
+```sh
+envycontrol.packages.x86_64-linux.default
+```
+
+Thanks to [@ITesserakt](https://github.com/ITesserakt) for adding initial NixOS support!
+
 ### From source
 
 1. Clone this repository with `git clone https://github.com/Lenuma-inc/envycontrol.git` or download the latest tarball from the releases page
@@ -209,6 +271,10 @@ The [GPU profile selector](https://github.com/LorenzoMorelli/GPU_profile_selecto
 
 ## 💡 Tips
 
+### Black screen on Debian with Nvidia mode?
+
+Try adding `xrandr --auto` to your `~/.xsessionrc`. See https://github.com/bayasdev/envycontrol/issues/173#issuecomment-2205292306, also check the [Wiki](https://github.com/bayasdev/envycontrol/wiki/Frequently-Asked-Questions#what-to-do-if-my-display-manager-is-not-supported) for an alternative solution if this didn't work.
+
 ### `nvidia` kernel module is named `nvidia-current` on Debian
 
 If you're running into this situation you can use the `--use-nvidia-current` flag to make EnvyControl use the correct module name.
@@ -216,6 +282,16 @@ If you're running into this situation you can use the `--use-nvidia-current` fla
 ### The `/usr/share/sddm/scripts/Xsetup` file is missing on my system
 
 If this ever happens please run `sudo envycontrol --reset-sddm`.
+
+### Files to remove if uninstalling `envycontrol`
+The below files are created by `envycontrol`, and you may want to remove them manually if they are not removed automatically to avoid any incorrect system behaviour.
+* `/var/cache/envycontrol`
+* `/etc/modprobe.d/blacklist-nvidia.conf`
+* `/lib/udev/rules.d/50-remove-nvidia.rules`
+* `/lib/udev/rules.d/80-nvidia-pm.rules`
+* `/etc/X11/xorg.conf`
+* `/etc/X11/xorg.conf.d/10-nvidia.conf`
+* `/etc/modprobe.d/nvidia.conf`
 
 ## ❓ Frequently Asked Questions (FAQ)
 
