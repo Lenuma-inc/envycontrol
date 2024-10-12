@@ -8,7 +8,8 @@ Optimus made easy
 </div>
 <br>
 
-# 👁‍🗨 EnvyControl
+# 👁‍🗨 EnvyControl for LunaOS
+this fork is used to build EnvyControl customized for [LunaOS](https://gitlab.com/LunaOS/)
 
 EnvyControl is a CLI tool that provides an easy way to switch between GPU modes on Nvidia Optimus systems (i.e laptops with hybrid Intel + Nvidia or AMD + Nvidia graphics configurations) under Linux.
 
@@ -46,8 +47,8 @@ Keep in mind any custom X.org configuration may get deleted or overwritten when 
 - RTD3 allows the dGPU to be dynamically turned off when not in use
   - Available choices for the `--rtd3` flag (based on the [official documentation](http://us.download.nvidia.com/XFree86/Linux-x86_64/530.30.02/README/dynamicpowermanagement.html))
     - `0` disabled
-    - `1` coarse-grained
-    - `2` fine-grained (default value if you don't provide one)
+    - `1` coarse-grained (default value if you don't provide one)
+    - `2` fine-grained
     - `3` fine-grained for Ampere and later
   - Only works in Turing and later
 - Performance on external screens might be reduced
@@ -76,7 +77,7 @@ options:
   --dm DISPLAY_MANAGER  Manually specify your Display Manager for Nvidia mode. Available choices: gdm, gdm3, sddm, lightdm
   --force-comp          Enable ForceCompositionPipeline on Nvidia mode
   --coolbits [VALUE]    Enable Coolbits on Nvidia mode. Default if specified: 28
-  --rtd3 [VALUE]        Setup PCI-Express Runtime D3 (RTD3) Power Management on Hybrid mode. Available choices: 0, 1, 2, 3. Default if specified: 2
+  --rtd3 [VALUE]        Setup PCI-Express Runtime D3 (RTD3) Power Management on Hybrid mode. Available choices: 0, 1, 2, 3. Default if specified: 1
   --use-nvidia-current  Use nvidia-current instead of nvidia for kernel modules
   --reset-sddm          Restore default Xsetup file
   --reset               Revert changes made by EnvyControl
@@ -177,6 +178,9 @@ sudo envycontrol --cache-query
 
 ## ⬇️ Getting EnvyControl
 
+### LunaOS
+1. `lpm -S envycontrol`
+
 ### Arch Linux ([AUR](https://aur.archlinux.org/packages/envycontrol))
 
 1. `yay -S envycontrol`
@@ -246,7 +250,7 @@ These distributions are also supported by the same COPR repo as Fedora Workstati
 
 ### From source
 
-1. Clone this repository with `git clone https://github.com/bayasdev/envycontrol.git` or download the latest tarball from the releases page
+1. Clone this repository with `git clone https://github.com/Lenuma-inc/envycontrol.git` or download the latest tarball from the releases page
 2. Run the script from the root of the repository like this `python ./envycontrol.py -s <MODE>`
 
 💡 Replace `python` with `python3` on Ubuntu/Debian
@@ -282,15 +286,6 @@ Try adding `xrandr --auto` to your `~/.xsessionrc`. See https://github.com/bayas
 
 If you're running into this situation you can use the `--use-nvidia-current` flag to make EnvyControl use the correct module name.
 
-### Wayland session is missing on Gnome 43+
-
-GDM now requires `NVreg_PreserveVideoMemoryAllocations` kernel parameter which breaks sleep in nvidia and hybrid mode, as well as rtd3 in hybrid mode, so EnvyControl disables it, if you need a Wayland session follow the instructions below
-
-```
-sudo systemctl enable nvidia-{suspend,resume,hibernate}
-sudo ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
-```
-
 ### The `/usr/share/sddm/scripts/Xsetup` file is missing on my system
 
 If this ever happens please run `sudo envycontrol --reset-sddm`.
@@ -312,7 +307,3 @@ The below files are created by `envycontrol`, and you may want to remove them ma
 ## 🐞 I have a problem
 
 Open an issue and **don't forget to complete all the requested fields!**
-
-## ☕️ Buy me a coffee
-
-[PayPal](https://www.paypal.com/paypalme/bayasdev)
