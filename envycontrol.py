@@ -487,44 +487,55 @@ def rebuild_initramfs():
         print('Rebuilding the initramfs with rpm-ostree...')
         command = ['rpm-ostree', 'initramfs', '--enable', '--arg=--force']
 
-    # Debian and Ubuntu derivatives
-    elif os.path.exists('/etc/debian_version'):
+    # Check for available initramfs tools based on commands
+    elif shutil.which('update-initramfs'):
         command = ['update-initramfs', '-u', '-k', 'all']
-    # RHEL and SUSE derivatives
-    elif os.path.exists('/etc/redhat-release') or os.path.exists('/usr/bin/zypper'):
-        command = ['dracut', '--force', '--regenerate-all']
-    # EndeavourOS with dracut
-    elif os.path.exists('/usr/lib/endeavouros-release') and os.path.exists('/usr/bin/dracut'):
+    elif shutil.which('dracut-rebuild'):
         command = ['dracut-rebuild']
-    # ALT Linux
-    elif os.path.exists('/etc/altlinux-release'):
+    elif shutil.which('dracut'):
+        command = ['dracut', '--force', '--regenerate-all']
+    elif shutil.which('make-initrd'):
         command = ['make-initrd']
-    # Arch Linux
-    elif os.path.exists('/etc/arch-release'):
+    elif shutil.which('limine-mkinitcpio'):
+        command = ['limine-mkinitcpio']
+    elif shutil.which('limine-update'):
+        command = ['limine-update']
+    elif shutil.which('mkinitcpio'):
         command = ['mkinitcpio', '-P']
+    elif os.path.exists('/usr/lib/booster/regenerate_images'):
+        command = ['/usr/lib/booster/regenerate_images']
     else:
         command = []
+        logging.warning("No supported initramfs tool found (update-initramfs, dracut, dracut-rebuild, make-initrd, limine-mkinitcpio, limine-update, mkinitcpio, or booster)")
 
-    if shutil.which("systemd-inhibit"):
+    base_command = command
+
+    if base_command and shutil.which("systemd-inhibit"):
         command = [
             'systemd-inhibit',
             '--who=envycontrol',
             '--why', 'Rebuilding initramfs',
             '--',
-            *command
+            *base_command
         ]
 
-    if len(command) != 0:
-        print('Rebuilding the initramfs...')
+    if base_command:
+        print(f'Rebuilding the initramfs with {" ".join(command)}...')
         if logging.getLogger().level == logging.DEBUG:
             p = subprocess.run(command)
         else:
             p = subprocess.run(
-                command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                command,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
         if p.returncode == 0:
             print('Successfully rebuilt the initramfs!')
         else:
-            logging.error("An error ocurred while rebuilding the initramfs")
+            logging.error(f"An error occurred while rebuilding the initramfs with {' '.join(command)}")
+    else:
+        logging.error("No command available to rebuild initramfs")
 
 
 def create_file(path, content, executable=False):
